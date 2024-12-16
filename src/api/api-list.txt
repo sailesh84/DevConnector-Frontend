@@ -1,0 +1,720 @@
+1:) User Registration:
+API: http://localhost:5000/api/users
+METHOD: POST
+REQUEST PAYLOAD:
+{
+  "name": "Brad Traversey",
+  "email": "techguyinfo@gmail.com",
+  "password": "123456"
+}
+
+RESPONSE:
+Result:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+--------------------------------------------------------------------------------------------------
+
+2:) Check Active User
+API: http://localhost:5000/api/auth
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+RESPONSE:
+{
+  "_id": "5cb111240127c18c87200",
+  "name": "Brad Traversy",
+  "email": "techguyinfo@gmail.com",
+  "avatar": "//www.gravatar.com/5cb111240127c18c87200",
+  "date": "2024-09-1617:30:06:7834",
+  "__v": 0
+}
+
+--------------------------------------------------------------------------------------------------
+
+3:) Login
+API: http://localhost:5000/api/auth
+METHOD: POST
+BODY:
+{
+  "email": "techguyinfo@gmail.com",
+  "password": "123456"
+}
+
+RESPONSE:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+--------------------------------------------------------------------------------------------------
+
+4:) Create Profile
+API: http://localhost:5000/api/profile
+METHOD: POST
+BODY:
+{
+  "company": "Traversy Media",
+  "status": "Instructor",
+  "skills": "ReactJS, NodeJS, AngularJS",
+  "bio": "I'm a developer and instructor for Traversy Media",
+  "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s",
+  "youtube": "https://youtube.co.in/traversymedia",
+  "twitter": "https://twitter.com/traversymedia",
+  "facebook": "https://facebook.com/traversymedia",
+  "linkedin": "https://linkedIn.in/traversymedia",
+  "instagram": "https://instagram.com/traversymedia"
+}
+
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+RESPONSE:
+{
+  "skills": [
+    "ReactJS",
+    "NodeJS",
+    "AngularJS"
+  ],
+  "_id": "5CC4EUywrpDWStyuaMFXE28",
+  "user": "9883Hyn6KNmNVXV87EamhC",
+  "company": "Traversy Media",
+  "status": "Instructor",
+  "bio": "I'm a developer and instructor for Traversy Media",
+  "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s",
+  "social": {
+    "youtube": "https://youtube.co.in/traversymedia",
+    "twitter": "https://twitter.com/traversymedia",
+    "facebook": "https://facebook.com/traversymedia",
+    "linkedin": "https://linkedIn.in/traversymedia",
+    "instagram": "https://instagram.com/traversymedia"
+  },
+  "experience": [],
+  "education": [],
+  "date": "2024-04-16723:17:10:7422",
+  "__v": 0
+}
+
+--------------------------------------------------------------------------------------------------
+
+5:) Get All Profile
+API: http://localhost:5000/api/profile
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+RESPONSE:
+[
+  {
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [],
+    education: [],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+  },
+  {
+    social: {
+      youtube: 'https://youtube.co.in/igneustechnologies',
+      twitter: 'https://twitter.com/igneustechnologies',
+      facebook: 'https://facebook.com/igneustechnologies',
+      linkedin: 'https://linkedIn.in/igneustechnologies',
+      instagram: 'https://instagram.com/igneustechnologies',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS', 'Github', 'GSAP'],
+    _id: '5CC4EUywrpDWStyuaMFXE29',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhD',
+      name: 'Hitesh Sidwani',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Igneus Technologies',
+    bio: "I'm a developer and instructor for Igneus Technologies",
+    status: 'Instructor',
+    experience: [],
+    education: [],
+    date: '2024-04-16723:17:10:7423',
+    __v: 0,
+  }
+];
+
+--------------------------------------------------------------------------------------------------
+
+6:) Get Profile by userID
+API: http://localhost:5000/api/profile/9883Hyn6KNmNVXV87EamhC
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+RESPONSE:
+{
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [],
+    education: [],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+}
+
+--------------------------------------------------------------------------------------------------
+
+7:) Delete User by Auth
+API: http://localhost:5000/api/profile
+METHOD: DELETE
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "User deleted";
+}
+
+--------------------------------------------------------------------------------------------------
+
+8:) Add Profile Experience
+API: http://localhost:5000/api/profile/experience
+METHOD: PUT
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+BODY: 
+{
+  "title": "Instructor & Senior Developer",
+  "company": "Traversy Media",
+  "location": "Boston MA",
+  "from": "08-10-2024",
+  "current": true,
+  "description": "Create projects and courses on web development"
+}
+
+RESPONSE:
+{
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [
+      {
+        "title": "Instructor & Senior Developer",
+		"company": "Traversy Media",
+		"location": "Boston MA",
+		"from": "08-10-2024",
+		"current": true,
+		"_id": "8afa64d329171a481a3206f86",
+		"description": "Create projects and courses on web development"
+      },
+    ],
+    education: [],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+  }
+  
+--------------------------------------------------------------------------------------------------
+
+9:) Add Profile Education
+API: http://localhost:5000/api/profile/education
+METHOD: PUT
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+BODY: 
+{
+  "school": "Northern Essex College",
+  "degree": "Associates Degree",
+  "fieldofstudy": "Computer Science",
+  "from": "08-11-2024",
+  "to": "08-11-2024",
+  "description": "Got Associates in computer science"
+}
+
+RESPONSE:
+{
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [
+      {
+        title: 'Instructor & Senior Developer',
+        company: 'Traversy Media',
+        location: 'Boston MA',
+        from: '08-10-2024',
+        current: true,
+		"_id": "8afa64d329171a481a3206f86",
+        description: 'Create projects and courses on web development',
+      },
+    ],
+    education: [
+      {
+        current: false,
+        _id: 'd0ec4dd47a31735effcd37d4e',
+        school: 'Northern Essex College',
+        degree: 'Associates Degree',
+        fieldofstudy: 'Computer Science',
+        from: '08-11-2024',
+        to: '08-11-2024',
+        description: 'Got Associates in computer science',
+      },
+    ],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+}
+
+--------------------------------------------------------------------------------------------------
+
+10:) Delete Profile Education
+API: http://localhost:5000/api/profile/education/d0ec4dd47a31735effcd37d4e
+METHOD: DELETE
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [
+      {
+        title: 'Instructor & Senior Developer',
+        company: 'Traversy Media',
+        location: 'Boston MA',
+        from: '08-10-2024',
+        current: true,
+		"_id": "8afa64d329171a481a3206f86",
+        description: 'Create projects and courses on web development',
+      },
+    ],
+    education: [],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+}
+
+--------------------------------------------------------------------------------------------------
+
+11:) Delete Profile Experience
+API: http://localhost:5000/api/profile/education/8afa64d329171a481a3206f86
+METHOD: DELETE
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+    social: {
+      youtube: 'https://youtube.co.in/traversymedia',
+      twitter: 'https://twitter.com/traversymedia',
+      facebook: 'https://facebook.com/traversymedia',
+      linkedin: 'https://linkedIn.in/traversymedia',
+      instagram: 'https://instagram.com/traversymedia',
+    },
+    skills: ['ReactJS', 'NodeJS', 'AngularJS'],
+    _id: '5CC4EUywrpDWStyuaMFXE28',
+    user: {
+      _id: '9883Hyn6KNmNVXV87EamhC',
+      name: 'Brad Traversy',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s',
+    },
+    company: 'Traversy Media',
+    bio: "I'm a developer and instructor for Traversy Media",
+    status: 'Instructor',
+    experience: [],
+    education: [],
+    date: '2024-04-16723:17:10:7422',
+    __v: 0,
+}
+
+--------------------------------------------------------------------------------------------------
+
+12:) Add Post for particular user
+API: http://localhost:5000/api/posts
+METHOD: POST
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+BODY:
+{
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+  when an unknown printer took a galley of type and scrambled it to make a type specimen book"
+}
+
+RESPONSE:
+{
+  "_id": "e2f17937c0fa9a307017b677a",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+  when an unknown printer took a galley of type and scrambled 
+  it to make a type specimen book",
+  "name": "Brad Traversy",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "179b8cd58263183a085c14e2d",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0472",
+  "__v": 0
+}
+
+--------------------------------------------------------------------------------------------------
+
+13:) Get All Posts:
+API: http://localhost:3000/api/posts
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[
+  {
+  "_id": "e2f17937c0fa9a307017b677a",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "Brad Traversy",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "9883Hyn6KNmNVXV87EamhC",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0472",
+  "__v": 0
+},
+{
+  "_id": "772264ee0915c05caa15f7eda",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "John Doe",
+  "avatar": "//www/gravatar.com/avatar/772264ee0915c05caa15f7eda",
+  "user": "9883Hyn6KNmNVXV87EamhD",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0473",
+  "__v": 0
+}]
+
+--------------------------------------------------------------------------------------------------
+
+14:) Get Single Posts:
+API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "_id": "772264ee0915c05caa15f7eda",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "John Doe",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "9883Hyn6KNmNVXV87EamhD",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0473",
+  "__v": 0
+}
+
+--------------------------------------------------------------------------------------------------
+
+15:) Delete Single Posts
+API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+METHOD: DELETE
+NOTE: post-id = 772264ee0915c05caa15f7eda
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "Post removed"
+}
+
+--------------------------------------------------------------------------------------------------
+
+16:) Add Post Likes
+API: http://localhost:3000/api/posts/like/772264ee0915c05caa15f7eda
+METHOD: PUT
+NOTE: post-id = 772264ee0915c05caa15f7eda
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+   'msg': 'Post already liked'
+}
+
+--------------------------------------------------------------------------------------------------
+
+17:) Get All Post's Likes:
+API: http://localhost:3000/api/posts/
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[
+  {
+  "_id": "e2f17937c0fa9a307017b677a",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "Brad Traversy",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "9883Hyn6KNmNVXV87EamhC",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0472",
+  "__v": 0
+},
+{
+  "_id": "772264ee0915c05caa15f7eda",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "John Doe",
+  "avatar": "//www/gravatar.com/avatar/772264ee0915c05caa15f7eda",
+  "user": "9883Hyn6KNmNVXV87EamhD",
+  "likes": [
+	{
+        "_id": "e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+    }
+  ],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0473",
+  "__v": 0
+}]
+
+--------------------------------------------------------------------------------------------------
+
+18:) Update Posts with unlike:
+API: http://localhost:3000/api/posts/unlike/772264ee0915c05caa15f7eda
+METHOD: PUT
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[]
+
+--------------------------------------------------------------------------------------------------
+
+19:) Add Comment on Post
+API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda
+METHOD: POST
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+BODY:
+{
+  "text": "Great Post"
+}
+
+RESPONSE:
+[
+  {
+    "_id": "e2f17937c0fa9a307017b677a",
+    "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    "name": "Brad Traversy",
+    "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+    "user": "179b8cd58263183a085c14e2d",
+    "likes": [],
+    "comments": [],
+    "date": "2019-04-1817:09:23:0472",
+    "__v": 0
+  },
+  {
+    "_id": "772264ee0915c05caa15f7eda",
+    "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    "name": "John Doe",
+    "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+    "user": "772264ee0915c05caa15f7eda",
+    "likes": [
+      {
+        "_id": "e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      }
+    ],
+    "comments": [
+      {
+        "date": "2019-04-1817:09:23:0473",
+        "_id": "5b0ac052efedac39e3d34bf99",
+        "text": "Great Post",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      },
+      {
+        "date": "2019-04-1817:09:23:0474",
+        "_id": "39e776d601ee999f444c65c1d",
+        "text": "Delete It",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      }
+    ],
+    "date": "2019-04-1817:09:23:0473",
+    "__v": 0
+  }
+]
+
+--------------------------------------------------------------------------------------------------
+
+20:) Delete Comment on Post
+API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
+METHOD: DELETE
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[
+	{
+        "date": "2019-04-1817:09:23:0473",
+        "_id": "5b0ac052efedac39e3d34bf99",
+        "text": "Great Post",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+    }
+]

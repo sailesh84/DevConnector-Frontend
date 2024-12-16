@@ -1,0 +1,110 @@
+Dev Connector:
+---------------------------------------------
+Folder Structure: DevConnector_Backend_App
+-models
+	|-User.js
+	|-Profile.js
+	|-Post.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+a:) routes/api/users.js
+-----------------------------------------
+
+1:) User Registration:
+	API: http://localhost:5000/api/users
+	METHOD: POST
+
+
+b:) routes/api/auth.js
+-----------------------------------------
+	1:) Check Active User
+	API: http://localhost:5000/api/auth
+	METHOD: GET
+	
+	2:) Login
+	API: http://localhost:3000/api/auth
+	METHOD: POST
+
+
+c:) routes/api/posts.js
+-----------------------------------------
+
+	1:) Add Post for particular user
+	API: http://localhost:5000/api/posts
+	METHOD: POST
+	
+	2:) Get All Posts:
+	API: http://localhost:3000/api/posts
+	METHOD: GET
+	
+	3:) Get Single Posts:
+	API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+	METHOD: GET
+
+	4:) Result: Delete Single Posts
+	API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+	METHOD: DELETE
+	
+	5:) Add Post Likes
+	API: http://localhost:3000/api/posts/like/772264ee0915c05caa15f7eda
+	METHOD: PUT
+	
+	6:) Update Posts with unlike:
+	API: http://localhost:3000/api/posts/unlike/772264ee0915c05caa15f7eda
+	METHOD: PUT
+	
+	7:) Add Comment on Post
+	API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda
+	METHOD: POST
+	
+	8:) Delete Comment on Post
+	API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
+	METHOD: DELETE
+
+
+d:) routes/api/profile.js
+-----------------------------------------
+
+	1:) Save and Update Profile
+	API: http://localhost:5000/api/profile
+	METHOD: POST
+	
+	2:) Get All Profiles
+	API: http://localhost:5000/api/profile
+	METHOD: GET
+	
+	3:) Get Profile Details by userID
+	API: http://localhost:5000/api/profile/9883Hyn6KNmNVXV87EamhC
+	METHOD: GET
+	
+	4:) Delete User by Auth
+	API: http://localhost:5000/api/profile
+	METHOD: DELETE
+
+	5:) Add Profile Experience
+	API: http://localhost:5000/api/profile/experience
+	METHOD: PUT
+	
+	6:) Add Profile Education
+	API: http://localhost:5000/api/profile/education
+	METHOD: PUT
+	
+	7:) Delete Profile Education
+	API: http://localhost:5000/api/profile/education/d0ec4dd47a31735effcd37d4e
+	METHOD: DELETE
+	
+	8:) Delete Profile Experience
+	API: http://localhost:5000/api/profile/education/8afa64d329171a481a3206f86
+	METHOD: DELETE
