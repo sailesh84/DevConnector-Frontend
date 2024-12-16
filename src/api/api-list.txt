@@ -478,7 +478,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 13:) Get All Posts:
-API: http://localhost:3000/api/posts
+API: http://localhost:5000/api/posts
 METHOD: GET
 HEADER:
 {
@@ -515,7 +515,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 14:) Get Single Posts:
-API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+API: http://localhost:5000/api/posts/772264ee0915c05caa15f7eda
 METHOD: GET
 HEADER:
 {
@@ -540,7 +540,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 15:) Delete Single Posts
-API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+API: http://localhost:5000/api/posts/772264ee0915c05caa15f7eda
 METHOD: DELETE
 NOTE: post-id = 772264ee0915c05caa15f7eda
 HEADER:
@@ -558,7 +558,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 16:) Add Post Likes
-API: http://localhost:3000/api/posts/like/772264ee0915c05caa15f7eda
+API: http://localhost:5000/api/posts/like/772264ee0915c05caa15f7eda
 METHOD: PUT
 NOTE: post-id = 772264ee0915c05caa15f7eda
 HEADER:
@@ -576,7 +576,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 17:) Get All Post's Likes:
-API: http://localhost:3000/api/posts/
+API: http://localhost:5000/api/posts/
 METHOD: GET
 HEADER:
 {
@@ -618,7 +618,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 18:) Update Posts with unlike:
-API: http://localhost:3000/api/posts/unlike/772264ee0915c05caa15f7eda
+API: http://localhost:5000/api/posts/unlike/772264ee0915c05caa15f7eda
 METHOD: PUT
 HEADER:
 {
@@ -633,7 +633,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 19:) Add Comment on Post
-API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda
+API: http://localhost:5000/api/posts/comment/772264ee0915c05caa15f7eda
 METHOD: POST
 HEADER:
 {
@@ -698,7 +698,7 @@ RESPONSE:
 --------------------------------------------------------------------------------------------------
 
 20:) Delete Comment on Post
-API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
+API: http://localhost:5000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
 METHOD: DELETE
 HEADER:
 {

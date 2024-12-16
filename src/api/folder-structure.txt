@@ -34,7 +34,7 @@ b:) routes/api/auth.js
 	METHOD: GET
 	
 	2:) Login
-	API: http://localhost:3000/api/auth
+	API: http://localhost:5000/api/auth
 	METHOD: POST
 
 
@@ -46,31 +46,31 @@ c:) routes/api/posts.js
 	METHOD: POST
 	
 	2:) Get All Posts:
-	API: http://localhost:3000/api/posts
+	API: http://localhost:5000/api/posts
 	METHOD: GET
 	
 	3:) Get Single Posts:
-	API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+	API: http://localhost:5000/api/posts/772264ee0915c05caa15f7eda
 	METHOD: GET
 
 	4:) Result: Delete Single Posts
-	API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+	API: http://localhost:5000/api/posts/772264ee0915c05caa15f7eda
 	METHOD: DELETE
 	
 	5:) Add Post Likes
-	API: http://localhost:3000/api/posts/like/772264ee0915c05caa15f7eda
+	API: http://localhost:5000/api/posts/like/772264ee0915c05caa15f7eda
 	METHOD: PUT
 	
 	6:) Update Posts with unlike:
-	API: http://localhost:3000/api/posts/unlike/772264ee0915c05caa15f7eda
+	API: http://localhost:5000/api/posts/unlike/772264ee0915c05caa15f7eda
 	METHOD: PUT
 	
 	7:) Add Comment on Post
-	API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda
+	API: http://localhost:5000/api/posts/comment/772264ee0915c05caa15f7eda
 	METHOD: POST
 	
 	8:) Delete Comment on Post
-	API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
+	API: http://localhost:5000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
 	METHOD: DELETE
 
 
