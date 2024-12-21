@@ -1,0 +1,91 @@
+Dev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+Details: In this section, it create POST API for user registration with auto-generating avatar URL
+with hashing password.
+
+Library:
+1:) gravatar - https://www.npmjs.com/package/gravatar
+2:) bcrypt   - https://www.npmjs.com/package/bcrypt
+
+
+In routes/api/user.js
+==================================
+const express = require('express');
+const router = express.Router();
+const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+const { check, validationResult } = require('express-validator/check');
+const User = require('../../models/user');
+
+
+router.post('/', [
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
+
+], 
+async (res, req) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {name, email, passord} = req.body;
+
+    try {
+        // See if user exists
+        let user = await User.findOne({ email });
+        if( user ) {
+            return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+        }
+    
+        // Get users gravatar
+        const avatar = gravatar.url(email, {
+            s: "200",   //size
+            r: "pg",    //rating
+            d: "mm"     //default
+        });
+
+        user = new User({
+            name,
+            email,
+            avatar,
+            passord
+        });
+
+        // Encrypt password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+
+        // Return json-web-tokens
+
+        res.send('User Registered');
+
+    } catch(err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+
+});
+
+module.exports = router;
+

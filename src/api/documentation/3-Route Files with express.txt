@@ -1,0 +1,76 @@
+Dev Connector:
+----------------------------------
+
+Folder Structure:
+DevConnector_Backend_App
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+In server.js:
+==================================
+const express = require('express');
+const connectDB = require('./config/db');
+const app = express();
+
+// Connect Database
+connectDB();
+
+//Define Routes
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/posts', require('./routes/api/posts'));
+
+
+const port = process.env.port || 500;
+app.listen(port, ()=> console.log(`Server started on port ${port}`));
+
+
+In routes/api/user.js
+==================================
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (res, req) => res.send('User route'));
+
+module.exports = router;
+
+
+In routes/api/auth.js
+==================================
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (res, req) => res.send('Auth route'));
+
+module.exports = router;
+
+
+In routes/api/profile.js
+==================================
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (res, req) => res.send('Profile route'));
+
+module.exports = router;
+
+
+In routes/api/posts.js
+==================================
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (res, req) => res.send('Posts route'));
+
+module.exports = router;

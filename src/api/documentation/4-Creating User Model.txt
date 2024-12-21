@@ -1,0 +1,59 @@
+Dev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In models/User.js
+==================================
+const moongoose = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+	name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    avatar: {
+        type: String
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = User = mongoose.model('user', UserSchema);
+
+
+In routes/api/user.js
+==================================
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (res, req) => res.send('User route'));
+
+module.exports = router;
+

@@ -1,0 +1,133 @@
+Dev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-middleware
+	|-auth.js
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In routes/api/auth.js
+==================================
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const { check, validationResult } = require('express-validator/check');
+
+const User = require('../../models/User');
+
+
+// route:       GET api/auth
+// description: Test route
+// Note: whenever we want to use this middleware, we simply add it as a second parameter like this.
+router.get('/', auth, (res, req) => {
+    try {
+        const user = await User.findById(req.user.id).select('-passowrd');
+        res.json(user);
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+// route:       POST api/auth
+// description: Authenticate user and get token (Login)
+router.post('/', [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password is required').exists()
+], 
+async (res, req) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {email, passord} = req.body;
+
+    try {
+        // See if user exists
+        let user = await User.findOne({ email });
+        if( !user ) {
+            return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        }
+
+        // Compare plain password with encrypted password
+        const isMatch = await bcrypt.compare(passowrd, user.passowrd);
+        if(!isMatch) {
+            return res.status(400).json({ errors: [{ msg: 'Password not matched' }] });   
+        }
+
+        // Return json-web-tokens
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+
+        jwt.sign(payload, config.get('jwtSecret'), {
+            expiresIn: 360000
+        }, (err, token) => {
+            if(err) throw err;
+            res.json({ token });
+        });
+
+    } catch(err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+module.exports = router;
+
+
+Result: Login with wrong password
+API: http://localhost:3000/api/auth
+METHOD: POST
+BODY:
+{
+  "email": "techguyinfo@gmail.com",
+  "password": "1234567"
+}
+
+RESPONSE:
+{
+  "errors":[
+    {
+      "msg": "Password not matched"
+    }
+  ]
+}
+
+
+Result: Login with proper credentials
+API: http://localhost:3000/api/auth
+METHOD: POST
+BODY:
+{
+  "email": "techguyinfo@gmail.com",
+  "password": "123456"
+}
+
+RESPONSE:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}

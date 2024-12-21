@@ -1,0 +1,349 @@
+Dev Connector: Add & Remove Comment Routes
+---------------------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+	|-Profile.js
+	|-Post.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In routes/api/posts.js
+==================================
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const { check, validationResult } = require('express-validator');
+
+const Post = require('../../models/Post');
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+
+
+// route:       POST api/posts 
+// description: Create a posts
+// access:      PRIVATE 
+router.post('/', [auth, [
+    check('test', 'Test is required').not().isEmpty()
+]], 
+async (req, res) => {
+    
+    // 1: Check for the body errors.
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+	try {
+        const user = await User.findById(req.user.id).select('-password');
+        const newPost = new Post({
+            text: req.body.text,
+            name: user.name,
+            avatar: user.avatar,
+            user: req.user.id
+        })
+
+        const post = await newPost.save();
+        res.json(post);
+
+	} catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       GET api/posts 
+// description: Get all posts
+// access:      PRIVATE 
+router.get('/', auth, async (req, res) => {
+	try {
+        const posts = await Post.find().sort({ date:-1 });
+        res.json(posts);
+
+	} catch(err) {
+		console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       GET api/posts/:id 
+// description: Get post by ID
+// access:      PRIVATE 
+router.get('/', auth, async (req, res) => {
+	try {
+        const posts = await Post.findById(req.params.id);
+
+        if(!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+
+        res.json(posts);
+
+	} catch(err) {
+		console.error(err.message);
+        if(err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       DELETE api/posts/:id  
+// description: Delete a post
+// access:      PRIVATE 
+router.delete('/:id', auth, async (req, res) => {
+	try {
+        const post = await Post.findById(req.params.id);
+
+        if(!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        //Check user
+        if(post.user.toString() !== req.user.id){
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        await post.remove(); 
+        res.json({ msg: 'Post removed' });
+
+	} catch(err) {
+		console.error(err.message);
+        if(err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       PUT api/posts/like/:id  
+// description: Like a post
+// access:      PRIVATE
+router.put('/like/:id', auth, async (req, res) => {
+	try {
+        const post = await Post.findById(req.params.id);
+
+        // Check if the post has already been liked 
+        if(post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
+            return res.status(400).json({ msg: 'Post already liked' });
+        }
+
+        post.likes.unshift({ user: req.user.id });
+
+        await post.save();
+        res.json(post.likes);
+
+	} catch(err) {
+		console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+}); 
+
+
+// route:       PUT api/posts/unlike/:id  
+// description: UnLike a post
+// access:      PRIVATE
+router.put('/unlike/:id', auth, async (req, res) => {
+	try {
+        const post = await Post.findById(req.params.id);
+
+        // Check if the post has already been liked 
+        if(post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
+            return res.status(400).json({ msg: 'Post has not yet been liked' });
+        }
+
+        // Get remove index
+        const removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user.id);
+        post.likes.splice(removeIndex, 1);
+
+        await post.save();
+        res.json(post.likes);
+
+	} catch(err) {
+		console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+}); 
+
+
+
+// route:       POST api/posts/comment/:id 
+// description: Comment on posts
+// access:      PRIVATE 
+router.post('/comment/:id', [auth, [
+    check('test', 'Test is required').not().isEmpty()
+]], 
+async (req, res) => {
+    
+    // 1: Check for the body errors.
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+	try {
+        const user = await User.findById(req.user.id).select('-password');
+        const post = await Post.findById(req.params.id);
+
+        const newComment = new Post{
+            text: req.body.text,
+            name: user.name,
+            avatar: user.avatar,
+            user: req.user.id
+        };
+
+        post.comments.unshift(newComment);
+        post.save();
+
+        res.json(post.comments);
+
+	} catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+
+
+// route:       DELETE api/posts/comment/:id/:comment_id
+// description: Delete a comment
+// access:      PRIVATE 
+router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
+	try {
+        const post = await Post.findById(req.params.id);
+
+        // Pull out comment
+        const comment = post.comments.find(comment -> comment.id === req.params.comment_id);
+
+        // Make surte comment exists
+        if(!comment) {
+            return res.status(404).json({ msg: 'Comment does not exist' });
+        }
+
+        // Check user
+        if(comment.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        // Get remove index
+        const removeIndex = post.comments.map(comment => comment.user.toString()).indexOf(req.user.id);
+        post.comments.splice(removeIndex, 1);
+        await post.save();
+
+        res.json(post.comments);
+
+	} catch(err) {
+		console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+module.exports = router;
+
+
+Result: Comment on Post:
+----------------------------------------------------------------------
+API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda
+METHOD: POST
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+BODY:
+{
+  "text": "Great Post"
+}
+
+RESPONSE:
+[
+  {
+    "_id": "e2f17937c0fa9a307017b677a",
+    "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    "name": "Brad Traversy",
+    "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+    "user": "179b8cd58263183a085c14e2d",
+    "likes": [],
+    "comments": [],
+    "date": "2019-04-1817:09:23:0472",
+    "__v": 0
+  },
+  {
+    "_id": "772264ee0915c05caa15f7eda",
+    "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    "name": "John Doe",
+    "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+    "user": "772264ee0915c05caa15f7eda",
+    "likes": [
+      {
+        "_id": "e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      }
+    ],
+    "comments": [
+      {
+        "date": "2019-04-1817:09:23:0473",
+        "_id": "5b0ac052efedac39e3d34bf99",
+        "text": "Great Post",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      },
+      {
+        "date": "2019-04-1817:09:23:0474",
+        "_id": "39e776d601ee999f444c65c1d",
+        "text": "Delete It",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+      }
+    ],
+    "date": "2019-04-1817:09:23:0473",
+    "__v": 0
+  }
+]
+
+
+
+Result: Delete Comment:
+------------------------------------------------------------------------------------------------
+API: http://localhost:3000/api/posts/comment/772264ee0915c05caa15f7eda/39e776d601ee999f444c65c1d
+METHOD: DELETE
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[
+	{
+        "date": "2019-04-1817:09:23:0473",
+        "_id": "5b0ac052efedac39e3d34bf99",
+        "text": "Great Post",
+        "name": "John Doe",
+        "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+        "user": "179b8cd58263183a085c14e2d"
+    }
+]

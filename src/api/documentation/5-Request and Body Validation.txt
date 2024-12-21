@@ -1,0 +1,89 @@
+Dev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In server.js:
+==================================
+const express = require('express');
+const connectDB = require('./config/db');
+const app = express();
+
+// Connect Database
+connectDB();
+
+// Init Middleware: It should allow us to get the data in request.body
+app.use(express.json({ extended: false }));
+
+
+//Define Routes
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/posts', require('./routes/api/posts'));
+
+
+const port = process.env.port || 500;
+app.listen(port, ()=> console.log(`Server started on port ${port}`));
+
+
+
+In routes/api/user.js
+==================================
+const express = require('express');
+const router = express.Router();
+const { check, validationResult } = require('express-validator/check');
+
+router.post('/', [
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
+    
+], (res, req) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    res.send('User route');
+});
+
+module.exports = router;
+
+
+Result for Errors:
+==================================
+{
+  "errors": [
+    {
+      "location": "body",
+      "param": "name",
+      "msg": "Name is required"
+    },
+	{
+      "location": "body",
+      "param": "email",
+      "msg": "Please include a valid email"
+    },
+    {
+      "location": "body",
+      "param": "password",
+      "msg": "Please enter a password with 6 or more characters"
+    }
+  ]
+}

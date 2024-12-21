@@ -1,0 +1,176 @@
+Dev Connector: Create and Update Profile Routes
+------------------------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+	|-Profile.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+In routes/api/profile.js
+==================================
+aconst express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const { check, validationResult } = require('express-validator');
+
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+
+
+// route:       GET api/profile/me
+// description: Get current user profile
+// access:      PRIVATE 
+router.get('/me', auth, async (res, req) => {
+    try {
+        const profile = await Profile.findOne({ user: req.user.id }).populate('user', ['name', 'avatar']);
+
+        if(!profile) {
+            return res.status(400).json({ msg: 'There is no profile for this user' });
+        }
+
+
+
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+// route:       POST api/profile
+// description: Create or Update user profile
+// access:      PRIVATE 
+router.post('/', [auth, [
+    check('status', 'Status is required').not().isEmpty()
+    check('skills', 'Skills is required').not().isEmpty()
+]], 
+async (req, res) => {
+
+    // 1: Check for the body errors.
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // 2: Pull out everthing from the body
+    const {
+        company,
+        website,
+        location,
+        bio,
+        status,
+        githubusername,
+        skills,
+        youtube,
+        facebook,
+        twitter,
+        instagram,
+        linkedin
+    } = req.body;
+
+    // 3: Build profile object
+    const profileFields = {};
+    profileFields.user = req.user.id;
+    if(company) profileFields.company = company;
+    if(website) profileFields.website = website;
+    if(location) profileFields.location = location;
+    if(bio) profileFields.bio = bio;
+    if(status) profileFields.status = status;
+    if(githubusername) profileFields.githubusername = githubusername;
+    if(skills) {
+        profileFields.skills = skills.split(',').map(skill => skill.trim());
+    }
+
+    // 4: Build social object
+    profileFields.social = {}
+    if(youtube) profileFields.social = youtube;
+    if(twitter) profileFields.social.twitter = twitter;
+    if(facebook) profileFields.social.facebook = facebook;
+    if(linkedin) profileFields.social.linkedin = linkedin;
+    if(instagram) profileFields.social.instagram = instagram;
+
+    try {
+        // 5: Find profile for the user
+        let profile = Profile.findOne({ user: req.user.id });
+
+        if(profile) {
+            // 6: If profile found, then Update it
+            profile = await Profile.findOneAndUpdate(
+                { user: req.user.id }, 
+                { $set: profileFields },
+                { new: true }
+            );
+            return res.json(profile);
+        }
+
+        // 7: If profile not found, then Create it.
+        profile = new Profile(profileFields);
+        await profile.save();
+        res.json(profile);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+
+});
+
+module.exports = router;
+
+Result: Create User Profile:
+--------------------------------------------
+API: http://localhost:3000/api/profile
+METHOD: POST
+BODY:
+{
+  "company": "Traversy Media",
+  "status": "Instructor",
+  "website": "https://www.traversymedia.com/",
+  "skills": "HTML, CSS, JS, PHP, Ruby",
+  "location": "Boston MA",
+  "bio": "I'm a developer and instructor for Traversy Media",
+  "githubusername": "bradtraversy",
+  "twitter": "https://www.twitter.com/traversymedia",
+  "facebook": "https://www.facebook.com/traversymedia",
+  "youtube": "https://www.youtube.com/traversymedia"
+}
+
+RESPONSE:
+{
+  "skills": [
+    "HTML",
+    "CSS",
+    "JS",
+    "PHP",
+    "Ruby"
+  ],
+  "_id": "262068df6962516b7e8cae21d",
+  "user": "179b8cd58263183a085c14e2d",
+  "company": "Traversy Media",
+  "website": "https://www.traversymedia.com/",
+  "location": "Boston MA",
+  "bio": "I'm a developer and instructor for Traversy Media",
+  "status": "Instructor",
+  "githubusername": "bradtraversy",
+  "social": {
+    "youtube": "https://www.youtube.com/traversymedia",
+    "twitter": "https://www.twitter.com/traversymedia",
+    "facebook": "https://www.facebook.com/traversymedia"
+  },
+  "experience": [],
+  "education": [],
+  "date": "2024-04-16723:17:10:7422",
+  "__v": 0
+}

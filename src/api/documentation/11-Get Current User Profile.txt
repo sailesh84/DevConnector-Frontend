@@ -1,0 +1,67 @@
+Dev Connector: Get Current User Profile
+---------------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+	|-Profile.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+
+In routes/api/profile.js
+==================================
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+
+// route:       GET api/profile/me
+// description: Get current user profile
+// access:      PRIVATE 
+router.get('/me', auth, async (res, req) => {
+    try {
+        const profile = await Profile.findOne({ user: req.user.id }).populate('user', ['name', 'avatar']);
+
+        if(!profile) {
+            return res.status(400).json({ msg: 'There is no profile for this user' });
+        }
+
+
+
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+module.exports = router;
+
+
+Result: Get current login user's profile:
+--------------------------------------------
+API: http://localhost:3000/api/profile/me
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "There is no profile for this user"
+}

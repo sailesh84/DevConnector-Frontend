@@ -1,0 +1,61 @@
+#MongoDB Altas Account Details:
+=========================================================
+email: smritibizzmedia@gmail.com, slshbizzmedia@gmail.com
+password: Sailesh@2024#
+
+#YouTube Links: https://www.youtube.com/watch?v=VkXvVOb99g0
+1:) Create Cluster: Cluster0
+2:) Connect Cluster:
+-Database User:
+a:) Username: mongoDB
+b:) Password: mongoDB
+
+-Choose Connection Method:
+a:) Compass = Chooses
+b:) Shell
+c:) MongoDB for VS Code
+d:) Atlas SQL
+
+#Connection String:
+mongodb+srv://mongoDB:<db_password>@cluster0.jtrey.mongodb.net/
+
+
+
+#Inside DevConnector_Backend_App folder:
+=========================================================
+a:) Initialize "package.json" by using command: npm init
+Basically it ask's some input for
+-package name
+-version
+-description
+-entry point
+-git repository
+-author
+-licence
+
+
+b:) Install dependencies, like
+- npm i express express-validator bcryptjs config gravatar jsonwebtoken mongoose request
+a: Express: Web-framework for backend.
+b: Express Validator: Its a middleware which provides validations for string data types.
+c: BCryptJS: It is used for password encryption
+d: Gravatar: It is used for profile avatar or image
+e: JSON Web Tokens: It can be used for an authentication system and can also be used for information exchange.
+ 
+
+"dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.1.0",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "gravatar": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.1",
+    "request":"^2.88.0"
+  }
+
+- npm I -D nodemon concurrently
+"devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.11"
+  }

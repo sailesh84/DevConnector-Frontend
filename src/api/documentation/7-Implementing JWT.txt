@@ -1,0 +1,145 @@
+jDev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+JWT: JSON WEB TOKENS
+==================================
+Link: https://jwt.io/
+
+Details: JWT is divided into 3 parts:
+- Header (RED color): It have "Algorithm" and "Token type" .
+- Payload (PINK color):  It's the data, that you want to send within the token (like, id, name, email, etc..). 
+  There's also an "issued at" parameter, at which is like the "timestamp" that it's issued at.
+- Verify Signature (BLUE color)
+
+Library:
+1:) jsonwebtokens: https://github.com/auth0/node-jsonwebtoken
+
+
+In config/default.json
+==================================
+{
+	"mongoURI": "connection string",
+	"jwtSecret": "mysecrettoken"
+}
+
+
+So, we create the user, hash the password, save the user in tha database,
+Get the payload which includes user.id, 
+const payload = {
+	user: {
+		id: user.id
+	}
+}
+
+and then we sign the token and pass the payload, pass the secret,
+and set the expiration which is optional. And then inside the callback, we'll get either an error or we'll
+get the token. If we get the token or we don't get an error then we're going to send that token back to the 
+client.
+jwt.sign(payload, config.get('jwtSecret'), {
+	expiresIn: 360000
+}, (err, token) => {
+	if(err) throw err;
+	res.json({ token });
+});
+
+
+In routes/api/user.js
+==================================
+const express = require('express');
+const router = express.Router();
+const { check, validationResult } = require('express-validator/check');
+const User = require('../../models/user');
+const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+
+router.post('/', [
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
+
+], 
+async (res, req) => {
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {name, email, passord} = req.body;
+
+    try {
+        // See if user exists
+        let user = await User.findOne({ email });
+        if( user ) {
+            return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+        }
+    
+        // Get users gravatar
+        const avatar = gravatar.url(email, {
+            s: "200",   //size
+            r: "pg",    //rating
+            d: "mm"     //default
+        });
+
+        user = new User({
+            name,
+            email,
+            avatar,
+            passord
+        });
+
+        // Encrypt password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+
+        // Return json-web-tokens
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+
+        jwt.sign(payload, config.get('jwtSecret'), {
+            expiresIn: 360000
+        }, (err, token) => {
+            if(err) throw err;
+            res.json({ token });
+        });
+
+    } catch(err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+
+});
+
+module.exports = router;
+
+
+Result:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}

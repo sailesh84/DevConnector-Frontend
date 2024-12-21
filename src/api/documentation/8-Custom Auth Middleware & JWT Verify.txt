@@ -1,0 +1,115 @@
+Dev Connector:
+----------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-middleware
+	|-auth.js
+-models
+	|-User.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In middleware/auth.js
+==================================
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+// Middleware function
+module.exports = function(req, res, next) {
+
+    // Get token from header
+    const token = req.header('x-auth-token');
+
+    // Check if not token
+    if(!token) {
+        return res.status(401).json({ msg: "No token, Authorization denied." });
+    }
+
+    // Verify token
+    try {
+        const decoded = jwt.verify(token, config.get('jwtSecret'));
+        req.user = decoded.user;
+        next();
+
+    } catch (err) {
+        res.status(401).json({ msg: 'Token is not valid' });
+    }
+};
+
+
+
+In routes/api/auth.js
+==================================
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const User = require('../../models/User');
+
+
+// Note: whenever we want to use this middleware, we simply add it as a second parameter like this.
+router.get('/', auth, (res, req) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+module.exports = router;
+
+
+Result: To check, current API is protected without sending token
+API: http://localhost:3000/api/auth
+METHOD: GET
+RESPONSE:
+{
+  "msg": "No token, Authorization denied."
+}
+
+Result: To check, current API is protected with sending wrong token
+API: http://localhost:3000/api/auth
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "Token is not valid."
+}
+
+Result: To check, current API is protected with sending correct token
+API: http://localhost:3000/api/auth
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+RESPONSE:
+{
+  "_id": "5cb111240127c18c87200",
+  "name": "Brad Traversy",
+  "email": "techguyinfo@gmail.com",
+  "avatar": "//www.gravatar.com/5cb111240127c18c87200",
+  "date": "2024-09-1617:30:06:7834",
+  "__v": 0
+}

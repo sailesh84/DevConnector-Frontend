@@ -1,0 +1,233 @@
+Dev Connector: Get & Delete Post Routes
+---------------------------------------------
+Folder Structure:
+DevConnector_Backend_App
+-models
+	|-User.js
+	|-Profile.js
+	|-Post.js
+-routes
+	|-api
+	   |-user.js
+	   |-auth.js
+	   |-profile.js
+	   |-posts.js
+-config
+	|-db.js
+	|-default.json
+-node_modules
+-package.json
+-server.js //Entry Point
+
+
+In routes/api/posts.js
+==================================
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth');
+const { check, validationResult } = require('express-validator');
+
+const Post = require('../../models/Post');
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+
+
+// route:       POST api/posts 
+// description: Create a posts
+// access:      PRIVATE 
+router.post('/', [auth, [
+    check('test', 'Test is required').not().isEmpty()
+]], 
+async (req, res) => {
+    
+    // 1: Check for the body errors.
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+	try {
+        const user = await User.findById(req.user.id).select('-password');
+        const newPost = new Post({
+            text: req.body.text,
+            name: user.name,
+            avatar: user.avatar,
+            user: req.user.id
+        })
+
+        const post = await newPost.save();
+        res.json(post);
+
+	} catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       GET api/posts 
+// description: Get all posts
+// access:      PRIVATE 
+router.get('/', auth, async (req, res) => {
+	try {
+        const posts = await Post.find().sort({ date:-1 });
+        res.json(posts);
+
+	} catch(err) {
+		console.error(err.message);
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       GET api/posts/:id 
+// description: Get post by ID
+// access:      PRIVATE 
+router.get('/', auth, async (req, res) => {
+	try {
+        const posts = await Post.findById(req.params.id);
+
+        if(!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+
+        res.json(posts);
+
+	} catch(err) {
+		console.error(err.message);
+        if(err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        res.status(500).send('Server Error');
+	}
+});
+
+
+// route:       DELETE api/posts/:id  
+// description: Delete a post
+// access:      PRIVATE 
+router.delete('/:id', auth, async (req, res) => {
+	try {
+        const post = await Post.findById(req.params.id);
+
+        if(!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        //Check user
+        if(post.user.toString() !== req.user.id){
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        await post.remove(); 
+        res.json({ msg: 'Post removed' });
+
+	} catch(err) {
+		console.error(err.message);
+        if(err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+        res.status(500).send('Server Error');
+	}
+});
+
+module.exports = router;
+
+
+
+Result: Get All Posts:
+--------------------------------------------
+API: http://localhost:3000/api/posts
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+[
+  {
+  "_id": "e2f17937c0fa9a307017b677a",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "Brad Traversy",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "179b8cd58263183a085c14e2d",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0472",
+  "__v": 0
+},
+{
+  "_id": "772264ee0915c05caa15f7eda",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "John Doe",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "772264ee0915c05caa15f7eda",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0473",
+  "__v": 0
+}]
+
+
+
+Result: Get Single Posts:
+--------------------------------------------------------------
+API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "_id": "772264ee0915c05caa15f7eda",
+  "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+  "name": "John Doe",
+  "avatar": "//www/gravatar.com/avatar/e2f17937c0fa9a307017b677a",
+  "user": "772264ee0915c05caa15f7eda",
+  "likes": [],
+  "comments": [],
+  "date": "2019-04-1817:09:23:0473",
+  "__v": 0
+}
+
+
+Result: Delete Single Posts
+API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "Post removed"
+}
+
+
+Result: Delete Invalid Posts which not in DB:
+--------------------------------------------------------------
+API: http://localhost:3000/api/posts/772264ee0915c05caa15f7eda
+METHOD: GET
+HEADER:
+{
+  "x-auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
+  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cdd"
+}
+
+RESPONSE:
+{
+  "msg": "Post not found"
+}
